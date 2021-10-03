@@ -32,30 +32,31 @@ func main() {
 	n := nextInt()
 
 	list := make([]Coordinate, n)
-	existsMap := make(map[Coordinate]bool)
-
 	for i := range list {
 		list[i] = Coordinate{nextInt(), nextInt()}
-		existsMap[list[i]] = true
 	}
 
-	sort.Slice(list, func(i, j int) bool {
-		return compare(list[i], list[j])
-	})
+	// xが同じのyの最低値と最高値の数
+	pair := make(map[Coordinate]int)
+
+	for i := range list {
+		for j := i + 1; j < n; j++ {
+			if list[i].x == list[j].x {
+				low := list[i].y
+				high := list[j].y
+				if low > high {
+					low, high = high, low
+				}
+				pair[Coordinate{low, high}]++
+			}
+		}
+	}
 
 	answer := 0
 
-	for i := range list {
-		for j := i; j < n; j++ {
-			if !(list[i].x < list[j].x && list[i].y < list[j].y) {
-				// もし1点目より2点目の方が右上になかったら処理終了
-				continue
-			}
-			if existsMap[Coordinate{list[i].x, list[j].y}] &&
-				existsMap[Coordinate{list[j].x, list[i].y}] {
-				answer++
-			}
-		}
+	for _, n := range pair {
+		// 1+2+3...なので
+		answer += n * (n - 1) / 2
 	}
 
 	fmt.Println(answer)
