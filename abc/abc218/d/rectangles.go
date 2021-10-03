@@ -16,39 +16,43 @@ func nextInt() int {
 	return i
 }
 
-func contains(s [][]int, e []int) bool {
-	for _, a := range s {
-		if a[0] == e[0] && a[1] == e[1] {
-			return true
-		}
+type Coordinate struct {
+	x, y int
+}
+
+func compare(a, b Coordinate) bool {
+	if a.x == b.x {
+		return a.y < b.y
 	}
-	return false
+	return a.x < b.x
 }
 
 func main() {
 	sc.Split(bufio.ScanWords)
 	n := nextInt()
 
-	coordinate := make([][]int, n)
+	list := make([]Coordinate, n)
+	existsMap := make(map[Coordinate]bool)
 
-	for i := range coordinate {
-		coordinate[i] = []int{nextInt(), nextInt()}
+	for i := range list {
+		list[i] = Coordinate{nextInt(), nextInt()}
+		existsMap[list[i]] = true
 	}
 
-	sort.Slice(coordinate, func(i, j int) bool {
-		return coordinate[i][0] < coordinate[j][0] && coordinate[i][1] < coordinate[j][1]
+	sort.Slice(list, func(i, j int) bool {
+		return compare(list[i], list[j])
 	})
 
 	answer := 0
 
-	for i := range coordinate {
-		for j := range coordinate {
-			if !(coordinate[i][0] < coordinate[j][0] && coordinate[i][1] < coordinate[j][1]) {
+	for i := range list {
+		for j := i; j < n; j++ {
+			if !(list[i].x < list[j].x && list[i].y < list[j].y) {
 				// もし1点目より2点目の方が右上になかったら処理終了
 				continue
 			}
-			if contains(coordinate, []int{coordinate[i][0], coordinate[j][1]}) &&
-				contains(coordinate, []int{coordinate[j][0], coordinate[i][1]}) {
+			if existsMap[Coordinate{list[i].x, list[j].y}] &&
+				existsMap[Coordinate{list[j].x, list[i].y}] {
 				answer++
 			}
 		}
