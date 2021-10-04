@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"sort"
 	"strconv"
 )
 
@@ -18,6 +17,10 @@ func nextInt() int {
 
 type Coordinate struct {
 	x, y int
+}
+
+type Range struct {
+	low, high int
 }
 
 func compare(a, b Coordinate) bool {
