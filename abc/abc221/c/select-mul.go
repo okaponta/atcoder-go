@@ -6,51 +6,40 @@ import (
 	"strconv"
 )
 
-func testFirst(first, second []rune, r rune) int {
+func testFirst(first, second []byte, r byte) int {
 	first = append(first, r)
-	firstInt, _ := strconv.Atoi(string(first))
-	secondInt, _ := strconv.Atoi(string(second))
-	return firstInt * secondInt
+	return multiply(first, second)
 }
 
-func testSecond(first, second []rune, r rune) int {
+func testSecond(first, second []byte, r byte) int {
 	second = append(second, r)
-	firstInt, _ := strconv.Atoi(string(first))
-	secondInt, _ := strconv.Atoi(string(second))
-	return firstInt * secondInt
+	return multiply(first, second)
+}
+
+func multiply(a, b []byte) int {
+	first, _ := strconv.Atoi(string(a))
+	second, _ := strconv.Atoi(string(b))
+	return first * second
 }
 
 func main() {
 	var n string
 	fmt.Scanf("%s", &n)
 
-	runes := []rune(n)
-	sort.Slice(runes, func(i, j int) bool { return runes[i] > runes[j] })
+	digit := []byte(n)
+	sort.Slice(digit, func(i, j int) bool { return digit[i] > digit[j] })
 
-	first := make([]rune, 0)
-	second := make([]rune, 0)
+	first := []byte{digit[0]}
+	second := []byte{digit[1]}
 
-	for i, j := range runes {
-		if i == 0 {
-			first = append(first, j)
-			continue
-		}
-		if i == 1 {
-			second = append(second, j)
-			continue
-		}
-		ansFirst := testFirst(first, second, j)
-		ansSecond := testSecond(first, second, j)
-		addToFirst := ansFirst > ansSecond
-		if addToFirst {
+	for i := 2; i < len(digit); i++ {
+		j := digit[i]
+		if testFirst(first, second, j) > testSecond(first, second, j) {
 			first = append(first, j)
 		} else {
 			second = append(second, j)
 		}
 	}
 
-	firstInt, _ := strconv.Atoi(string(first))
-	secondInt, _ := strconv.Atoi(string(second))
-
-	fmt.Println(firstInt * secondInt)
+	fmt.Println(multiply(first, second))
 }
