@@ -13,6 +13,9 @@ func main() {
 
 	var i int
 	fmt.Scanf("%d", &i)
+
+	sc.Split(bufio.ScanWords)
+	nextInt()
 }
 
 var sc = bufio.NewScanner(os.Stdin)
