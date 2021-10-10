@@ -33,12 +33,6 @@ func main() {
 		userChanges[endDate] -= 1
 	}
 
-	for key, value := range userChanges {
-		if value == 0 {
-			delete(userChanges, key)
-		}
-	}
-
 	userSlice := make([]UserChange, len(userChanges))
 	count := 0
 	for key, value := range userChanges {
