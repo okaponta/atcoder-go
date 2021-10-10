@@ -6,6 +6,7 @@ import (
 	"os"
 	"sort"
 	"strconv"
+	"strings"
 )
 
 var sc = bufio.NewScanner(os.Stdin)
@@ -62,14 +63,11 @@ func main() {
 		countAns += userChange.count
 	}
 
-	for i, j := range answer {
-		if i == 0 {
-			continue
-		}
-		if i != 1 {
-			fmt.Print(" ")
-		}
-		fmt.Print(j)
+	answerStr := make([]string, n)
+
+	for i := 1; i < len(answer); i++ {
+		answerStr[i-1] = strconv.Itoa(answer[i])
 	}
-	fmt.Println()
+
+	fmt.Println(strings.Join(answerStr, " "))
 }
