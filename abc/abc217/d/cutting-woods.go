@@ -4,10 +4,12 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 )
 
 var sc = bufio.NewScanner(os.Stdin)
+var wr = bufio.NewWriter(os.Stdout)
 
 func nextInt() int {
 	sc.Scan()
@@ -15,53 +17,71 @@ func nextInt() int {
 	return i
 }
 
-type Node struct {
-	cut  int
-	next *Node
-}
-
-type CutList struct {
-	root *Node
-	len  int
-}
-
 type Query struct {
 	c, x int
 }
 
-func print(cut []int, x, l int) {
-	low, high := binarySearchBetween(cut, x, l)
-	fmt.Println(cut[high] - cut[low])
-}
-
-func binarySearchBetween(cut []int, x, l int) (int, int) {
-	low, high := 0, len(cut)-1
-	for high-low != 1 {
-		median := (low + high) / 2
-		if cut[median] < x {
-			low = median
-		} else {
-			high = median
-		}
-	}
-	return low, high
-}
-
 func main() {
 	sc.Split(bufio.ScanWords)
+	defer wr.Flush()
 	l, q := nextInt(), nextInt()
 	input := make([]Query, q)
+	vals := make([]int, q+2)
 	for i := range input {
 		input[i] = Query{nextInt(), nextInt()}
+		vals[i] = input[i].x
 	}
-	cut := []int{0, l}
+	vals[q] = l
+	vals[q+1] = 0
+	sort.Ints(vals)
+
+	valToIndexMap := map[int]int{}
+	for i, v := range vals {
+		valToIndexMap[v] = i
+	}
+
+	bit := newBinaryIndexedTree(q + 1)
+
 	for _, query := range input {
 		if query.c == 1 {
-			_, pos := binarySearchBetween(cut, query.x, l)
-			cut = append(cut[:pos+1], cut[pos:]...)
-			cut[pos] = query.x
+			bit.add(valToIndexMap[query.x], 1)
 		} else {
-			print(cut, query.x, l)
+			s := bit.sum(valToIndexMap[query.x])
+			fmt.Fprintln(wr, vals[bit.lowerBound(s+1)]-vals[bit.lowerBound(s)])
 		}
 	}
+}
+
+type binaryIndexedTree []int
+
+func newBinaryIndexedTree(n int) binaryIndexedTree {
+	return make(binaryIndexedTree, n+1)
+}
+
+func (t binaryIndexedTree) add(i, x int) {
+	for i++; i < len(t) && i > 0; i += i & -i {
+		t[i] += x
+	}
+}
+
+func (t binaryIndexedTree) sum(i int) int {
+	s := 0
+	for i++; i > 0; i -= i & -i {
+		s += t[i]
+	}
+	return s
+}
+
+func (t binaryIndexedTree) lowerBound(x int) int {
+	idx, k := 0, 1
+	for k < len(t) {
+		k <<= 1
+	}
+	for k >>= 1; k > 0; k >>= 1 {
+		if idx+k < len(t) && t[idx+k] < x {
+			x -= t[idx+k]
+			idx += k
+		}
+	}
+	return idx
 }
