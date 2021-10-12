@@ -1,7 +1,9 @@
 package util
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"strings"
 )
 
@@ -16,4 +18,11 @@ func printBool(ok bool) {
 func printSlice(slice []string) {
 	joined := strings.Join(slice, " ")
 	fmt.Println(joined)
+}
+
+var wr = bufio.NewWriter(os.Stdout)
+
+func main() {
+	defer wr.Flush()
+	fmt.Fprintln(wr, "hoge")
 }
