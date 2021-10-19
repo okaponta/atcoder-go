@@ -36,6 +36,28 @@ func binaryMedLen(target int, array []int) int {
 	return array[high] - array[low]
 }
 
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
+}
+
+// 要素がひとつの場合無限ループ
+func binaryMin(target int, array []int) int {
+	low := 0
+	high := len(array) - 1
+	for high-low != 1 {
+		median := (low + high) / 2
+		if array[median] < target {
+			low = median
+		} else {
+			high = median
+		}
+	}
+	return min(array[high]-target, target-array[low])
+}
+
 func main() {
 	items := []int{1, 2, 9, 20, 31, 45, 63, 70, 100}
 	fmt.Println(binarySearch(63, items))
