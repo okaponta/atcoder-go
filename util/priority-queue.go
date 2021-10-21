@@ -10,7 +10,8 @@ func main() {
 	// 要素をいれる
 	heap.Push(&pq, pqi{1})
 	// 最初の要素を取り出す
-	a := heap.Pop(&pq)
+	a := pq[0].a
+	heap.Pop(&pq)
 	fmt.Println(a)
 }
 
