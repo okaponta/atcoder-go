@@ -42,9 +42,6 @@ func main() {
 		for j := 0; j <= x; j++ {
 			for k := 0; k <= y; k++ {
 				count[i][j][k] = min(count[i][j][k], count[i-1][j][k])
-				if count[i-1][j][k] == 1000 {
-					continue
-				}
 				jj := min(j+a, x)
 				kk := min(k+b, y)
 				count[i][jj][kk] = min(count[i][jj][kk], count[i-1][j][k]+1)
