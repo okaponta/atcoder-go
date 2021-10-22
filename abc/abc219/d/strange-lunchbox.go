@@ -22,10 +22,6 @@ func min(x, y int) int {
 	return y
 }
 
-type bento struct {
-	tako, tai int
-}
-
 func main() {
 	sc.Split(bufio.ScanWords)
 	n, x, y := nextInt(), nextInt(), nextInt()
@@ -35,8 +31,8 @@ func main() {
 		count[i] = make([][]int, x+1)
 		for j := 0; j <= x; j++ {
 			count[i][j] = make([]int, y+1)
-			for k := 1; k <= y; k++ {
-				count[i][j][k] = 2147483647
+			for k := 0; k <= y; k++ {
+				count[i][j][k] = 1000
 			}
 		}
 	}
@@ -46,7 +42,7 @@ func main() {
 		for j := 0; j <= x; j++ {
 			for k := 0; k <= y; k++ {
 				count[i][j][k] = min(count[i][j][k], count[i-1][j][k])
-				if count[i-1][j][k] == 1e9 {
+				if count[i-1][j][k] == 1000 {
 					continue
 				}
 				jj := min(j+a, x)
@@ -55,7 +51,7 @@ func main() {
 			}
 		}
 	}
-	if count[n][x][y] == 2147483647 {
+	if count[n][x][y] == 1000 {
 		count[n][x][y] = -1
 	}
 	fmt.Println(count[n][x][y])
